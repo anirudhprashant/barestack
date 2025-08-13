@@ -1,0 +1,14 @@
+<svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- BareStack Logo -->
+  <rect width="120" height="40" rx="8" fill="#1f2937"/>
+  
+  <!-- Icon/Symbol -->
+  <rect x="8" y="12" width="16" height="16" rx="2" fill="#10b981"/>
+  <rect x="10" y="14" width="12" height="2" fill="#1f2937"/>
+  <rect x="10" y="18" width="8" height="2" fill="#1f2937"/>
+  <rect x="10" y="22" width="10" height="2" fill="#1f2937"/>
+  
+  <!-- Text -->
+  <text x="32" y="16" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="white">Bare</text>
+  <text x="32" y="28" font-family="Inter, sans-serif" font-size="10" font-weight="400" fill="#9ca3af">Stack</text>
+</svg>

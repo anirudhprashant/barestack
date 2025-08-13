@@ -1,100 +1,83 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY
+      setIsScrolled(scrollTop > 20)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-parchment/95 backdrop-blur-sm border-b border-loam/10">
-      <div className="container-max">
-        <div className="flex items-center justify-between py-4">
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      isScrolled ? 'bg-white/95 backdrop-blur-lg border-b border-gray-200/50 shadow-lg shadow-black/5' : ''
+    }`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-terracotta rounded flex items-center justify-center">
-              <span className="text-parchment font-bold text-sm">BS</span>
+          <motion.div 
+            className="flex items-center cursor-pointer group"
+            whileHover={{ scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          >
+            <div className="absolute inset-0 bg-terracotta/10 rounded-lg blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
+            <div>
+              <span className="font-bold tracking-tight text-loam text-2xl" style={{ fontFamily: 'Varela Round, Inter, sans-serif' }}>
+                barestack.
+              </span>
+              <div className="text-xs font-medium text-loam/70">
+                Barebones. Bare Necessities.
+              </div>
             </div>
-            <span className="font-bold text-xl text-loam">BareStack</span>
-          </div>
+          </motion.div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <a href="#features" className="text-loam hover:text-terracotta transition-colors">
-              Features
-            </a>
-            <a href="#calculator" className="text-loam hover:text-terracotta transition-colors">
-              Calculator
-            </a>
-            <a href="#products" className="text-loam hover:text-terracotta transition-colors">
-              Products
-            </a>
-            <a href="#waitlist" className="btn-primary">
-              Join Waitlist
-            </a>
+          {/* Navigation */}
+          <nav className="hidden md:flex items-center space-x-1">
+            <NavLink href="#home">home</NavLink>
+            <NavLink href="#features">features</NavLink>
+            <NavLink href="#about">about</NavLink>
+            <NavLink href="#contact">contact</NavLink>
+            <motion.button
+              className="ml-4 px-6 py-2 bg-gradient-to-r from-terracotta to-loam text-white rounded-full font-medium text-sm hover:shadow-lg transition-all duration-200"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              join waitlist
+            </motion.button>
           </nav>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
+          {/* Mobile menu button */}
+          <motion.button 
+            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            whileTap={{ scale: 0.95 }}
           >
-            <div className="w-6 h-6 flex flex-col justify-center space-y-1">
-              <span className={`block h-0.5 bg-loam transition-transform ${
-                isMenuOpen ? 'rotate-45 translate-y-1.5' : ''
-              }`} />
-              <span className={`block h-0.5 bg-loam transition-opacity ${
-                isMenuOpen ? 'opacity-0' : ''
-              }`} />
-              <span className={`block h-0.5 bg-loam transition-transform ${
-                isMenuOpen ? '-rotate-45 -translate-y-1.5' : ''
-              }`} />
-            </div>
-          </button>
+            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </motion.button>
         </div>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <motion.nav
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="md:hidden py-4 border-t border-loam/10"
-          >
-            <div className="flex flex-col space-y-4">
-              <a
-                href="#features"
-                className="text-loam hover:text-terracotta transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Features
-              </a>
-              <a
-                href="#calculator"
-                className="text-loam hover:text-terracotta transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Calculator
-              </a>
-              <a
-                href="#products"
-                className="text-loam hover:text-terracotta transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Products
-              </a>
-              <a
-                href="#waitlist"
-                className="btn-primary inline-block text-center"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Join Waitlist
-              </a>
-            </div>
-          </motion.nav>
-        )}
       </div>
     </header>
+  )
+}
+
+function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <motion.a
+      href={href}
+      className="px-4 py-2 text-gray-600 hover:text-gray-900 font-medium text-sm rounded-lg hover:bg-gray-50 transition-all duration-200 capitalize"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
+      {children}
+    </motion.a>
   )
 }

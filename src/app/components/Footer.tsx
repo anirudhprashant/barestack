@@ -5,11 +5,10 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-terracotta rounded flex items-center justify-center">
-                <span className="text-parchment font-bold text-sm">BS</span>
-              </div>
-              <span className="font-bold text-xl">BareStack</span>
+            <div className="mb-4">
+              <span className="text-3xl font-bold text-parchment" style={{ fontFamily: 'Varela Round, Inter, sans-serif' }}>
+                barestack
+              </span>
             </div>
             <p className="text-parchment/80 mb-4 max-w-md">
               Free, open-source tools that eliminate bloat. Stop paying for 68% of features you'll never use.
