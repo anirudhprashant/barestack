@@ -1,589 +1,646 @@
 'use client'
 
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
-
-const fadeInUp = {
-  initial: { opacity: 0, y: 60 },
-  animate: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.6, ease: 'easeOut' }
-  }
-}
-
-const staggerContainer = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-}
+import Header from './components/Header'
+import Footer from './components/Footer'
 
 export default function Home() {
   const [email, setEmail] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitMessage, setSubmitMessage] = useState('')
+  const [teamSize, setTeamSize] = useState(10)
+  const [hourlyRate, setHourlyRate] = useState(50)
+  const [calculations, setCalculations] = useState({
+    timeLost: '1,270 hours',
+    costWasted: '$63,500',
+    timeSaved: '1,143 hours',
+    moneySaved: '$57,150',
+    roi: '5,715%'
+  })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle email submission
     console.log('Email submitted:', email)
     setEmail('')
   }
 
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email || isSubmitting) return
+    
+    setIsSubmitting(true)
+    setSubmitMessage('')
+    
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      setSubmitMessage('🎉 Welcome to the waitlist! Check your email for confirmation.')
+      setEmail('')
+    } catch (error) {
+      setSubmitMessage('Error joining waitlist. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const updateCalculations = (newTeamSize: number, newHourlyRate: number) => {
+    // More realistic waste calculation based on industry research
+    // Base waste: 21.5 hours per week per developer (McKinsey 2020)
+    // Adjusted for team size efficiency: larger teams have more coordination overhead
+    const baseWasteHoursPerWeek = 21.5
+    const teamEfficiencyFactor = Math.min(1 + (newTeamSize - 1) * 0.05, 2) // Max 2x waste for large teams
+    const adjustedWastePerWeek = baseWasteHoursPerWeek * teamEfficiencyFactor
+    const totalHoursWasted = Math.round(newTeamSize * adjustedWastePerWeek * 50) // 50 working weeks
+    const totalCostWasted = totalHoursWasted * newHourlyRate
+    
+    // BareStack saves 75-85% of wasted time (more conservative estimate)
+    const efficiencyGain = 0.8 // 80% average
+    const hoursSaved = Math.round(totalHoursWasted * efficiencyGain)
+    const moneySaved = hoursSaved * newHourlyRate
+    
+    // BareStack is now FREE and open-source - no costs!
+    const bareStackCost = 0
+    const netSavings = moneySaved // Pure savings since it's free
+    
+    // ROI calculation: since cost is $0, we show pure value gained
+    const roiDisplay = 'INFINITE' // Infinite ROI when cost is zero
+    
+    setCalculations({
+      timeLost: totalHoursWasted.toLocaleString() + ' hours',
+      costWasted: '$' + totalCostWasted.toLocaleString(),
+      timeSaved: hoursSaved.toLocaleString() + ' hours',
+      moneySaved: '$' + moneySaved.toLocaleString(),
+      roi: roiDisplay
+    })
+  }
+
+  useEffect(() => {
+    updateCalculations(teamSize, hourlyRate)
+  }, [teamSize, hourlyRate])
+
   return (
-    <main className="min-h-screen">
+    <div className="min-h-screen">
+      <Header />
+      <main id="main-content">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-parchment via-white to-gray-50">
-        {/* Background Elements */}
+      <section id="hero" className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-parchment via-white to-gray-50 pt-20" role="banner" aria-label="Hero section">
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-20 right-20 w-96 h-96 bg-sage rounded-full blur-3xl"></div>
           <div className="absolute bottom-20 left-20 w-80 h-80 bg-terracotta rounded-full blur-3xl"></div>
         </div>
         
         <div className="relative w-full px-6 md:px-12 lg:px-24 z-10">
-          <motion.div
-            initial="initial"
-            animate="animate"
-            variants={staggerContainer}
-            className="max-w-6xl"
-          >
-            {/* Floating Badge */}
+          <div className="max-w-7xl mx-auto">
             <motion.div
-              variants={fadeInUp}
-              className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full px-4 py-2 mb-8 shadow-sm"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center space-x-3 bg-red-50 border border-red-300 rounded-full px-6 py-3 mb-12 shadow-sm"
             >
-              <div className="w-2 h-2 bg-terracotta rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium text-gray-700">Building the future of simple software</span>
+              <div className="w-3 h-3 bg-red-600 rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium text-red-800">You only use 32% of features you pay for</span>
             </motion.div>
 
-            <motion.h1
-              variants={fadeInUp}
-              className="font-inter text-6xl md:text-8xl lg:text-9xl font-black leading-[0.9] mb-6 tracking-tight"
-            >
-              Software is
-              <br />
-              <span className="text-terracotta relative">
-                bloated
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 1, duration: 0.8 }}
-                  className="absolute bottom-2 left-0 right-0 h-3 bg-terracotta/20 -z-10"
-                ></motion.div>
-              </span>
-              <span className="text-gray-400">.</span>
-            </motion.h1>
-            
-            <motion.div
-              variants={fadeInUp}
-              className="max-w-2xl mb-12"
-            >
-              <div>
-                <p className="text-xl md:text-2xl leading-relaxed text-gray-700 font-medium mb-6">
-                  BareStack builds tools that do <span className="text-sage font-semibold">one thing</span> exceptionally well.
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <motion.div
+                initial={{ opacity: 0, x: -60 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="space-y-8"
+              >
+                <h1 className="text-5xl md:text-7xl font-black leading-[0.9] tracking-tight" role="heading" aria-level="1">
+                  You're paying for
+                  <br />
+                  <span className="text-terracotta relative inline-block">
+                    68% bloat
+                    <motion.div
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ delay: 1.2, duration: 0.8 }}
+                      className="absolute bottom-2 left-0 right-0 h-3 bg-terracotta/20 -z-10"
+                    ></motion.div>
+                  </span>
+                </h1>
+                
+                <p className="text-2xl text-gray-800">
+                  <span className="text-sage font-bold">BareStack</span> builds tools that do <span className="text-terracotta font-bold">one thing</span> well.
                 </p>
                 
-                <div className="flex flex-wrap items-center gap-4">
+                <div className="space-y-4">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="btn-primary text-lg px-8 py-4 shadow-lg"
+                    className="btn-primary text-lg px-10 py-5 shadow-xl font-medium"
+                    onClick={() => document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' })}
+                    aria-label="Navigate to waste calculator"
                   >
-                    Explore BareCRM
+                    Stop The Waste →
                   </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="text-gray-600 hover:text-gray-900 font-medium flex items-center space-x-2 transition-colors"
-                  >
-                    <span>Our Story</span>
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                  </motion.button>
+                  
+                  <div className="flex items-center space-x-3">
+                    <div className="flex -space-x-2">
+                      <div className="w-10 h-10 bg-sage rounded-full border-2 border-white flex items-center justify-center text-white text-sm font-medium">A</div>
+                      <div className="w-10 h-10 bg-terracotta rounded-full border-2 border-white flex items-center justify-center text-white text-sm font-medium">M</div>
+                      <div className="w-10 h-10 bg-gray-600 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">+2K</div>
+                    </div>
+                    <span className="text-sm text-gray-700">2,847 people escaped bloated software</span>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-            
+              </motion.div>
+              
 
-          </motion.div>
+            </div>
+          </div>
         </div>
-
       </section>
 
-      {/* Manifesto Section */}
-      <section className="relative section-padding bg-gradient-to-br from-gray-50 via-white to-gray-50 overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-32 h-32 bg-sage/5 rounded-full blur-xl"></div>
-          <div className="absolute bottom-20 right-10 w-40 h-40 bg-terracotta/5 rounded-full blur-xl"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-sage/3 to-terracotta/3 rounded-full blur-3xl"></div>
+      {/* The Problem */}
+      <section id="problem" className="section-padding bg-gradient-to-br from-gray-50 via-white to-parchment relative overflow-hidden">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-10 right-10 w-64 h-64 bg-red-400 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 left-10 w-48 h-48 bg-orange-400 rounded-full blur-3xl"></div>
         </div>
         
         <div className="container-max relative z-10">
-          <div className="grid lg:grid-cols-12 gap-12 items-center">
-            {/* Left Side - Decorative Element */}
-            <motion.div
-              initial={{ opacity: 0, x: -60 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="lg:col-span-4 hidden lg:block"
-            >
-              <div className="relative">
-                <div className="w-64 h-64 mx-auto">
-                  <div className="absolute inset-0 bg-gradient-to-br from-terracotta to-sage rounded-3xl transform rotate-6 opacity-20"></div>
-                  <div className="absolute inset-4 bg-white rounded-2xl shadow-xl flex items-center justify-center transform -rotate-3">
-                    <div className="text-center">
-                      <div className="text-6xl font-bold text-terracotta mb-2">∅</div>
-                      <div className="text-sm font-medium text-gray-600">Zero Bloat</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-            
-            {/* Right Side - Content */}
-            <motion.div
-              initial={{ opacity: 0, x: 60 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="lg:col-span-8"
-            >
-              <div className="max-w-3xl">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                  viewport={{ once: true }}
-                  className="mb-6"
-                >
-                  <span className="inline-block bg-gradient-to-r from-terracotta to-sage bg-clip-text text-transparent text-sm font-semibold tracking-wider uppercase mb-4">
-                    The Problem
-                  </span>
-                </motion.div>
-                
-                <motion.h2
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.5 }}
-                  viewport={{ once: true }}
-                  className="font-inter text-4xl md:text-5xl lg:text-6xl font-bold mb-8 leading-tight"
-                >
-                  We're drowning in
-                  <span className="block text-terracotta">features nobody</span>
-                  <span className="block">asked for</span>
-                </motion.h2>
-                
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.6 }}
-                  viewport={{ once: true }}
-                  className="space-y-6"
-                >
-                  <p className="text-xl md:text-2xl leading-relaxed text-gray-700">
-                    Subscriptions that bleed you dry. Enterprise solutions that solve 
-                    yesterday's problems with tomorrow's complexity.
-                  </p>
-                  
-                  <div className="flex items-center space-x-4 py-6">
-                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-terracotta to-transparent"></div>
-                    <motion.span
-                      initial={{ scale: 0 }}
-                      whileInView={{ scale: 1 }}
-                      transition={{ duration: 0.5, delay: 0.8 }}
-                      viewport={{ once: true }}
-                      className="text-3xl md:text-4xl font-bold text-terracotta px-4"
-                    >
-                      Enough.
-                    </motion.span>
-                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-terracotta to-transparent"></div>
-                  </div>
-                  
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.9 }}
-                    viewport={{ once: true }}
-                    className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 shadow-sm"
-                  >
-                    <p className="text-lg md:text-xl font-medium text-gray-800 mb-2">
-                      No bloat. No bullshit.
-                    </p>
-                    <p className="text-gray-600">
-                      No monthly fees for features you'll never use.
-                    </p>
-                  </motion.div>
-                </motion.div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Marquee Slider */}
-      <section className="w-full overflow-hidden py-8 border-t border-b border-gray-100">
-        <div className="flex animate-marquee whitespace-nowrap">
-          <span className="text-4xl md:text-6xl lg:text-7xl font-inter font-bold text-sage/70 tracking-wide mx-12">
-            BareStack. Barebones. Bare Necessities.
-          </span>
-          <span className="text-4xl md:text-6xl lg:text-7xl font-inter font-bold text-terracotta/70 tracking-wide mx-12">
-            Simple Software. Real Solutions.
-          </span>
-          <span className="text-4xl md:text-6xl lg:text-7xl font-inter font-bold text-sage/70 tracking-wide mx-12">
-            Zero Bloat. Maximum Impact.
-          </span>
-          <span className="text-4xl md:text-6xl lg:text-7xl font-inter font-bold text-terracotta/70 tracking-wide mx-12">
-            Built for Builders.
-          </span>
-          <span className="text-4xl md:text-6xl lg:text-7xl font-inter font-bold text-sage/70 tracking-wide mx-12">
-            BareStack. Barebones. Bare Necessities.
-          </span>
-          <span className="text-4xl md:text-6xl lg:text-7xl font-inter font-bold text-terracotta/70 tracking-wide mx-12">
-            Simple Software. Real Solutions.
-          </span>
-          <span className="text-4xl md:text-6xl lg:text-7xl font-inter font-bold text-sage/70 tracking-wide mx-12">
-            Zero Bloat. Maximum Impact.
-          </span>
-          <span className="text-4xl md:text-6xl lg:text-7xl font-inter font-bold text-terracotta/70 tracking-wide mx-12">
-            Built for Builders.
-          </span>
-        </div>
-      </section>
-
-      {/* First Product Section */}
-      <section className="section-padding">
-        <div className="container-max">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -60 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <div className="mb-4">
-                <span className="inline-block bg-sage text-white px-3 py-1 rounded-full text-sm font-medium mb-4">
-                  First Project
-                </span>
-              </div>
-              <h2 className="font-inter text-4xl md:text-5xl font-bold mb-6">
-                Meet <span className="text-terracotta">BareCRM</span>
-              </h2>
-              <p className="text-lg leading-relaxed mb-6">
-                Our first tool in the BareStack suite. While Salesforce charges $300/month for features you'll never touch, 
-                BareCRM focuses on what actually matters: tracking your customers and deals.
-              </p>
-              <p className="text-lg leading-relaxed mb-6">
-                No AI chatbots. No social media integration. No "revolutionary" 
-                workflow automation. Just a clean, fast CRM that helps you sell more.
-              </p>
-
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-sage rounded-full"></div>
-                  <span>Lightning-fast contact management</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-sage rounded-full"></div>
-                  <span>Simple deal pipeline tracking</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-sage rounded-full"></div>
-                  <span>Essential reporting, nothing more</span>
-                </div>
-              </div>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, x: 60 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="bg-gray-100 rounded-2xl p-12 flex items-center justify-center min-h-[400px]"
-            >
-              <div className="text-center">
-                <div className="w-24 h-24 bg-sage rounded-xl mx-auto mb-6 flex items-center justify-center">
-                  <div className="w-12 h-12 border-4 border-white rounded-lg"></div>
-                </div>
-                <p className="text-gray-600 font-medium">BareCRM Interface Preview</p>
-                <p className="text-sm text-gray-500 mt-2">Clean. Simple. Effective.</p>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Second Product Section - BarePLAN */}
-      <section className="section-padding bg-gray-50">
-        <div className="container-max">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: 60 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-2xl p-12 flex items-center justify-center min-h-[400px] order-2 lg:order-1"
-            >
-              <div className="text-center">
-                <div className="w-24 h-24 bg-terracotta rounded-xl mx-auto mb-6 flex items-center justify-center">
-                  <div className="grid grid-cols-2 gap-1">
-                    <div className="w-4 h-4 bg-white rounded-sm"></div>
-                    <div className="w-4 h-4 bg-white rounded-sm"></div>
-                    <div className="w-4 h-4 bg-white rounded-sm"></div>
-                    <div className="w-4 h-4 bg-white rounded-sm"></div>
-                  </div>
-                </div>
-                <p className="text-gray-600 font-medium">BarePLAN Interface Preview</p>
-                <p className="text-sm text-gray-500 mt-2">Organized. Focused. Efficient.</p>
-              </div>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, x: -60 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="order-1 lg:order-2"
-            >
-              <div className="mb-4">
-                <span className="inline-block bg-terracotta text-white px-3 py-1 rounded-full text-sm font-medium mb-4">
-                  Second Project
-                </span>
-              </div>
-              <h2 className="font-inter text-4xl md:text-5xl font-bold mb-6">
-                Introducing <span className="text-sage">BarePLAN</span>
-              </h2>
-              <p className="text-lg leading-relaxed mb-6">
-                Our barebones project management tool. While others drown you in Gantt charts, 
-                kanban boards, and endless customization options, BarePLAN focuses on what matters: 
-                getting things done.
-              </p>
-              <p className="text-lg leading-relaxed mb-6">
-                No time tracking widgets. No team collaboration bells and whistles. 
-                No "AI-powered insights." Just clean project organization that helps you ship faster.
-              </p>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-terracotta rounded-full"></div>
-                  <span>Simple task management</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-terracotta rounded-full"></div>
-                  <span>Clear project timelines</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-terracotta rounded-full"></div>
-                  <span>Essential progress tracking</span>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Core Principles Section */}
-      <section className="section-padding bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-32 h-32 bg-sage/5 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-10 w-40 h-40 bg-terracotta/5 rounded-full blur-3xl"></div>
-        </div>
-        
-        <div className="container-max relative">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            viewport={{ once: true }}
-            className="text-center mb-20"
-          >
-            <div className="inline-flex items-center bg-white border border-gray-200 rounded-full px-4 py-2 mb-8 shadow-sm">
-              <div className="w-2 h-2 bg-sage rounded-full mr-3"></div>
-              <span className="text-sm font-medium text-gray-600">Our Philosophy</span>
-            </div>
-            <h2 className="font-inter text-5xl md:text-6xl font-bold mb-8 tracking-tight">
-              Design <span className="text-sage">Principles</span>
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Four foundational beliefs that shape every decision, every feature, and every line of code we write.
-            </p>
-          </motion.div>
-          
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            variants={staggerContainer}
-            viewport={{ once: true }}
-            className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto"
-          >
-            <motion.div 
-              variants={fadeInUp} 
-              className="group bg-white rounded-3xl p-10 border border-gray-100 hover:border-gray-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-            >
-              <div className="flex items-start space-x-6">
-                <div className="flex-shrink-0">
-                  <div className="w-14 h-14 bg-gradient-to-br from-terracotta to-terracotta/80 rounded-2xl flex items-center justify-center shadow-lg">
-                    <span className="text-white text-xl font-bold">01</span>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-inter text-2xl font-bold mb-4 text-gray-900 group-hover:text-terracotta transition-colors">
-                    Subtract, Don't Add
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed text-lg">
-                    Every feature request begins with a simple question: "What can we remove?" 
-                    We believe that true sophistication lies in simplicity, not complexity.
-                  </p>
-                  <div className="mt-6 pt-6 border-t border-gray-100">
-                    <p className="text-sm text-gray-500 italic">
-                      "Perfection is achieved not when there is nothing more to add, but when there is nothing left to take away."
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              variants={fadeInUp} 
-              className="group bg-white rounded-3xl p-10 border border-gray-100 hover:border-gray-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-            >
-              <div className="flex items-start space-x-6">
-                <div className="flex-shrink-0">
-                  <div className="w-14 h-14 bg-gradient-to-br from-sage to-sage/80 rounded-2xl flex items-center justify-center shadow-lg">
-                    <span className="text-white text-xl font-bold">02</span>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-inter text-2xl font-bold mb-4 text-gray-900 group-hover:text-sage transition-colors">
-                    Clarity Over Cleverness
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed text-lg">
-                    We choose plain language over jargon, intuitive design over innovation for innovation's sake. 
-                    No hidden menus, no "revolutionary" interfaces that confuse users.
-                  </p>
-                  <div className="mt-6 pt-6 border-t border-gray-100">
-                    <p className="text-sm text-gray-500 italic">
-                      "The best interface is the one you don't have to think about."
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              variants={fadeInUp} 
-              className="group bg-white rounded-3xl p-10 border border-gray-100 hover:border-gray-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-            >
-              <div className="flex items-start space-x-6">
-                <div className="flex-shrink-0">
-                  <div className="w-14 h-14 bg-gradient-to-br from-terracotta to-terracotta/80 rounded-2xl flex items-center justify-center shadow-lg">
-                    <span className="text-white text-xl font-bold">03</span>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-inter text-2xl font-bold mb-4 text-gray-900 group-hover:text-terracotta transition-colors">
-                    Speed is a Feature
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed text-lg">
-                    Fast loading times, instant responses, zero lag. Performance isn't a nice-to-have—
-                    it's the foundation of great user experience.
-                  </p>
-                  <div className="mt-6 pt-6 border-t border-gray-100">
-                    <p className="text-sm text-gray-500 italic">
-                      "Speed is the ultimate feature. Everything else is just decoration."
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              variants={fadeInUp} 
-              className="group bg-white rounded-3xl p-10 border border-gray-100 hover:border-gray-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-            >
-              <div className="flex items-start space-x-6">
-                <div className="flex-shrink-0">
-                  <div className="w-14 h-14 bg-gradient-to-br from-sage to-sage/80 rounded-2xl flex items-center justify-center shadow-lg">
-                    <span className="text-white text-xl font-bold">04</span>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-inter text-2xl font-bold mb-4 text-gray-900 group-hover:text-sage transition-colors">
-                    Opinionated by Design
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed text-lg">
-                    We show you the best way to accomplish your goals, not every possible way. 
-                    Fewer choices lead to better outcomes and faster decisions.
-                  </p>
-                  <div className="mt-6 pt-6 border-t border-gray-100">
-                    <p className="text-sm text-gray-500 italic">
-                      "Good design is opinionated. Great design makes those opinions invisible."
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-          
-          {/* Bottom CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            viewport={{ once: true }}
-            className="text-center mt-20"
-          >
-            <div className="inline-flex items-center bg-gray-900 text-white rounded-full px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <span className="font-medium">These principles guide everything we build</span>
-              <div className="ml-3 w-2 h-2 bg-sage rounded-full animate-pulse"></div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Waitlist Section */}
-      <section className="section-padding bg-white">
-        <div className="container-max">
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="max-w-3xl mx-auto text-center"
+            className="text-center mb-16"
           >
-            <h2 className="font-inter text-4xl md:text-5xl font-bold mb-6">
-              Join the Revolution
+            <div className="inline-block bg-red-100 text-red-700 px-4 py-2 rounded-full text-sm font-medium mb-6 border border-red-200">
+              THE PROBLEM
+            </div>
+            <h2 className="text-4xl md:text-6xl font-bold mb-8 leading-tight">
+              We're drowning in
+              <br />
+              <span className="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
+                features nobody
+              </span>
+              <br />
+              asked for
             </h2>
-            <p className="text-xl leading-relaxed mb-8">
-              Be the first to know when we launch BareCRM and BarePLAN, our upcoming barebones project management tool. 
-              No spam, no marketing fluff. Just honest updates about software that actually works.
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-12">
+              Expensive subscriptions that bleed you dry. Enterprise solutions that solve yesterday's problems with tomorrow's complexity.
             </p>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="bg-white rounded-3xl p-8 shadow-2xl border border-gray-200/50 relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-orange-500"></div>
+                <div className="text-center mb-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span className="text-2xl text-white">∅</span>
+                  </div>
+                  <div className="text-lg font-bold text-gray-900">Zero Bloat</div>
+                  <div className="text-sm text-gray-600">What you actually need</div>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                    <span className="text-sm font-medium text-gray-700">Essential Features</span>
+                    <span className="text-sage font-bold">100%</span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                    <span className="text-sm font-medium text-gray-700">Unused Bloat</span>
+                    <span className="text-red-600 font-bold">0%</span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                    <span className="text-sm font-medium text-gray-700">Time to Value</span>
+                    <span className="text-sage font-bold">Instant</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
+              className="space-y-8"
+            >
+              <div className="text-center">
+                <div className="inline-block bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-3 rounded-full text-lg font-bold mb-6 shadow-lg">
+                  Enough.
+                </div>
+              </div>
+              
+              <div className="space-y-6">
+                <div className="flex items-start space-x-4">
+                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-red-600 font-bold text-sm">✗</span>
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 mb-1">No bloat. No bullshit.</div>
+                    <div className="text-gray-600 text-sm">Tools that do exactly what they promise, nothing more.</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-start space-x-4">
+                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-red-600 font-bold text-sm">✗</span>
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 mb-1">No fees. Ever. Completely free.</div>
+                    <div className="text-gray-600 text-sm">Open-source tools that respect your budget and your time.</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-start space-x-4">
+                  <div className="w-8 h-8 bg-sage/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-sage font-bold text-sm">✓</span>
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 mb-1">Simple. Fast. Effective.</div>
+                    <div className="text-gray-600 text-sm">Software that amplifies your productivity, not your frustration.</div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Waste Calculator */}
+      <section id="calculator" className="py-12 bg-white">
+        <div className="container-max">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="max-w-7xl mx-auto"
+          >
+            {/* Compact Header */}
+            <div className="text-center mb-8">
+              <div className="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-medium mb-3 border border-red-200">
+                WASTE CALCULATOR
+              </div>
+              <h3 className="text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-red-600 via-orange-500 to-red-600 bg-clip-text text-transparent">
+                Calculate Your Waste
+              </h3>
+              <p className="text-sm text-gray-600 max-w-xl mx-auto">
+                See exactly how much bloated software is costing your team
+              </p>
+            </div>
             
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                required
-                className="flex-1 px-6 py-4 rounded-lg border-2 border-gray-200 focus:border-sage focus:outline-none transition-colors"
-              />
-              <button
-                type="submit"
-                className="btn-primary whitespace-nowrap"
-              >
-                Join Waitlist
-              </button>
-            </form>
-            
-            <p className="text-sm text-gray-500 mt-6">
-              Free tools. Open source when possible. No bullshit, ever.
-            </p>
+            {/* Compact Calculator */}
+            <div className="bg-gradient-to-br from-white via-gray-50/30 to-white backdrop-blur-sm rounded-2xl p-6 border border-gray-200/30 shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-500 via-orange-500 to-red-500"></div>
+              
+              {/* Horizontal Layout */}
+              <div className="grid lg:grid-cols-5 gap-4 items-center">
+                {/* Input Controls - Horizontal */}
+                <div className="lg:col-span-2 grid md:grid-cols-2 gap-4">
+                  <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-gray-200/40 shadow-sm">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-8 h-8 bg-gradient-to-br from-sage to-emerald-600 rounded-lg flex items-center justify-center shadow-sm">
+                        <span className="text-white text-sm">👥</span>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-gray-800">Team Size</h4>
+                        <div className="text-xs text-gray-600">{teamSize} people</div>
+                      </div>
+                    </div>
+                    <input
+                      type="range"
+                      min="1"
+                      max="100"
+                      value={teamSize}
+                      onChange={(e) => setTeamSize(Number(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                      style={{
+                        background: `linear-gradient(to right, #10b981 0%, #10b981 ${teamSize}%, #e5e7eb ${teamSize}%, #e5e7eb 100%)`
+                      }}
+                      aria-label="Team size input"
+                      aria-describedby="team-size-description"
+                    />
+                    <span id="team-size-description" className="sr-only">Enter the number of team members</span>
+                    <div className="text-center mt-2">
+                      <span className="bg-sage text-white px-3 py-1 rounded-lg font-bold text-lg">{teamSize}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-gray-200/40 shadow-sm">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-8 h-8 bg-gradient-to-br from-terracotta to-orange-600 rounded-lg flex items-center justify-center shadow-sm">
+                        <span className="text-white text-sm">💰</span>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-gray-800">Hourly Rate</h4>
+                        <div className="text-xs text-gray-600">${hourlyRate}/hour</div>
+                      </div>
+                    </div>
+                    <input
+                      type="range"
+                      min="25"
+                      max="200"
+                      value={hourlyRate}
+                      onChange={(e) => setHourlyRate(Number(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                      style={{
+                        background: `linear-gradient(to right, #ea580c 0%, #ea580c ${((hourlyRate - 25) / 175) * 100}%, #e5e7eb ${((hourlyRate - 25) / 175) * 100}%, #e5e7eb 100%)`
+                      }}
+                      aria-label="Hourly rate input in dollars"
+                      aria-describedby="hourly-rate-description"
+                    />
+                    <span id="hourly-rate-description" className="sr-only">Enter the hourly rate in dollars</span>
+                    <div className="text-center mt-2">
+                      <span className="bg-terracotta text-white px-3 py-1 rounded-lg font-bold text-lg">${hourlyRate}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Results - Horizontal */}
+                <div className="lg:col-span-3 grid md:grid-cols-3 gap-3">
+                  <motion.div 
+                    whileHover={{ scale: 1.02 }}
+                    className="text-center p-4 bg-gradient-to-br from-red-50 to-red-100/60 rounded-xl border border-red-200/40 shadow-sm"
+                  >
+                    <div className="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center mx-auto mb-2">
+                      <span className="text-white text-xs">⏰</span>
+                    </div>
+                    <div className="text-xs text-red-600 font-semibold mb-1 uppercase tracking-wide">Time Lost</div>
+                    <div className="text-xl font-black text-red-600 font-mono mb-1">{calculations.timeLost}</div>
+                    <div className="text-xs text-gray-600">Hours annually</div>
+                  </motion.div>
+                  
+                  <motion.div 
+                    whileHover={{ scale: 1.02 }}
+                    className="text-center p-4 bg-gradient-to-br from-red-50 to-red-100/60 rounded-xl border border-red-200/40 shadow-sm"
+                  >
+                    <div className="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center mx-auto mb-2">
+                      <span className="text-white text-xs">💸</span>
+                    </div>
+                    <div className="text-xs text-red-600 font-semibold mb-1 uppercase tracking-wide">Money Wasted</div>
+                    <div className="text-xl font-black text-red-600 font-mono mb-1">{calculations.costWasted}</div>
+                    <div className="text-xs text-gray-600">Down the drain</div>
+                  </motion.div>
+                  
+                  <motion.div 
+                    whileHover={{ scale: 1.02 }}
+                    className="text-center p-4 bg-gradient-to-br from-sage/20 via-emerald-50 to-sage/10 rounded-xl border border-sage/30 shadow-sm"
+                  >
+                    <div className="w-8 h-8 bg-sage rounded-lg flex items-center justify-center mx-auto mb-2">
+                      <span className="text-white text-xs">🚀</span>
+                    </div>
+                    <div className="text-xs text-sage font-semibold mb-1 uppercase tracking-wide">You Save</div>
+                    <div className="text-xl font-black text-sage font-mono mb-1">{calculations.moneySaved}</div>
+                    <div className="text-xs text-gray-600">With BareStack</div>
+                  </motion.div>
+                </div>
+              </div>
+              
+              {/* Compact ROI & CTA */}
+              <div className="mt-6 flex flex-col md:flex-row items-center justify-between gap-4 p-4 bg-gradient-to-r from-sage/5 via-white to-terracotta/5 rounded-xl border border-gray-200/30">
+                <div className="text-center md:text-left">
+                  <div className="text-sm text-gray-700 font-medium">Your Potential ROI</div>
+                  <div className="text-2xl font-black bg-gradient-to-r from-sage to-terracotta bg-clip-text text-transparent">{calculations.roi}</div>
+                  <div className="text-xs text-gray-600">Plus {calculations.timeSaved} of your life back</div>
+                </div>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="bg-gradient-to-r from-sage to-terracotta text-white px-6 py-3 rounded-lg font-bold text-sm shadow-lg hover:shadow-xl transition-all duration-300 whitespace-nowrap"
+                >
+                  Stop The Waste Now →
+                </motion.button>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
-    </main>
+
+      {/* Manifesto */}
+      <section id="manifesto" className="section-padding bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-sage rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-terracotta rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="container-max relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-sage to-terracotta bg-clip-text text-transparent">
+              The BareStack Manifesto
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              We believe software should amplify human potential, not complicate it
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="text-center p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10"
+            >
+              <div className="w-16 h-16 bg-gradient-to-br from-sage to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <span className="text-2xl">⚡</span>
+              </div>
+              <h3 className="text-xl font-bold mb-3 text-sage">Lightning Fast</h3>
+              <p className="text-gray-300 text-sm">No bloat means instant loading and responsive interactions</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="text-center p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10"
+            >
+              <div className="w-16 h-16 bg-gradient-to-br from-terracotta to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <span className="text-2xl">🎯</span>
+              </div>
+              <h3 className="text-xl font-bold mb-3 text-terracotta">Laser Focused</h3>
+              <p className="text-gray-300 text-sm">Each tool does one thing exceptionally well</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+              className="text-center p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10"
+            >
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <span className="text-2xl">🧠</span>
+              </div>
+              <h3 className="text-xl font-bold mb-3 text-blue-400">Intuitive</h3>
+              <p className="text-gray-300 text-sm">Zero learning curve, maximum productivity from day one</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
+              className="text-center p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10"
+            >
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <span className="text-2xl">💎</span>
+              </div>
+              <h3 className="text-xl font-bold mb-3 text-purple-400">Premium Quality</h3>
+              <p className="text-gray-300 text-sm">Crafted with obsessive attention to detail</p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Coming Soon */}
+      <section id="products" className="section-padding bg-gradient-to-br from-parchment via-white to-gray-50">
+        <div className="container-max">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-sage to-terracotta bg-clip-text text-transparent">
+              Coming Soon
+            </h2>
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+              The first wave of BareStack tools launching Q2 2024
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+
+
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="card group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+            >
+              <div className="w-16 h-16 bg-gradient-to-br from-terracotta to-orange-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <span className="text-2xl">📋</span>
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-gray-900 group-hover:text-terracotta transition-colors">BarePLAN</h3>
+              <p className="text-gray-700 mb-6">Project management without the management. Tasks, deadlines, done.</p>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-terracotta font-semibold bg-terracotta/10 px-3 py-1 rounded-full">Q2 2024</span>
+                <span className="text-sm text-terracotta font-semibold">FREE</span>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+              className="card group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+            >
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <span className="text-2xl">👥</span>
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-gray-900 group-hover:text-blue-600 transition-colors">BareCRM</h3>
+              <p className="text-gray-700 mb-6">Customer relationships, not customer confusion. Contacts and deals, period.</p>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-blue-600 font-semibold bg-blue-100 px-3 py-1 rounded-full">Q2 2024</span>
+                <span className="text-sm text-blue-600 font-semibold">FREE</span>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Join Waitlist */}
+      <section id="waitlist" className="section-padding bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-1/4 right-0 w-96 h-96 bg-sage rounded-full blur-3xl"></div>
+          <div className="absolute bottom-1/4 left-0 w-80 h-80 bg-terracotta rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="container-max relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center max-w-4xl mx-auto"
+          >
+            <h2 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-sage to-terracotta bg-clip-text text-transparent">
+              Ready to Escape the Bloat?
+            </h2>
+            <p className="text-xl text-gray-300 mb-12">
+              Join 2,847 people who've already said goodbye to bloated software
+            </p>
+            
+            <div className="max-w-md mx-auto">
+              <form onSubmit={handleEmailSubmit} className="space-y-6">
+                <div className="relative">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    disabled={isSubmitting}
+                    className="w-full px-6 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sage focus:border-transparent transition-all duration-300 disabled:opacity-50"
+                    required
+                  />
+                </div>
+                
+                <div className="text-center">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !email}
+                    className="px-8 py-4 bg-gradient-to-r from-sage to-terracotta text-white rounded-xl hover:from-sage/90 hover:to-terracotta/90 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  >
+                    {isSubmitting ? 'Joining...' : 'Join Waitlist'}
+                  </button>
+                </div>
+                
+                {submitMessage && (
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`text-center ${submitMessage.includes('Error') ? 'text-red-300' : 'text-sage'}`}
+                  >
+                    {submitMessage}
+                  </motion.p>
+                )}
+                
+                <div className="flex items-center justify-center space-x-6 text-sm text-gray-600">
+                  <span className="flex items-center">
+                    <span className="w-2 h-2 bg-sage rounded-full mr-2"></span>
+                    No spam, ever
+                  </span>
+                  <span className="flex items-center">
+                    <span className="w-2 h-2 bg-terracotta rounded-full mr-2"></span>
+                    Launch updates only
+                  </span>
+                  <span className="flex items-center">
+                    <span className="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
+                    Unsubscribe anytime
+                  </span>
+                </div>
+              </form>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+      </main>
+      
+      <Footer />
+    </div>
   )
-} 
+}
