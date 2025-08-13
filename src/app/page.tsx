@@ -109,7 +109,7 @@ export default function Home() {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="space-y-8"
               >
-                <h1 className="text-5xl md:text-7xl font-black leading-[0.9] tracking-tight" role="heading" aria-level="1">
+                <h1 className="text-5xl md:text-7xl font-black leading-[0.9] tracking-tight" role="heading" aria-level={1}>
                   You're paying for
                   <br />
                   <span className="text-terracotta relative inline-block">
