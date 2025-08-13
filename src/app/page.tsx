@@ -84,7 +84,7 @@ export default function Home() {
       <Header />
       <main id="main-content">
       {/* Hero Section */}
-      <section id="hero" className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-parchment via-white to-gray-50 pt-20" role="banner" aria-label="Hero section">
+      <section id="hero" className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-parchment via-white to-gray-50 pt-12" role="banner" aria-label="Hero section">
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-20 right-20 w-96 h-96 bg-sage rounded-full blur-3xl"></div>
           <div className="absolute bottom-20 left-20 w-80 h-80 bg-terracotta rounded-full blur-3xl"></div>
@@ -138,14 +138,7 @@ export default function Home() {
                     Stop The Waste →
                   </motion.button>
                   
-                  <div className="flex items-center space-x-3">
-                    <div className="flex -space-x-2">
-                      <div className="w-10 h-10 bg-sage rounded-full border-2 border-white flex items-center justify-center text-white text-sm font-medium">A</div>
-                      <div className="w-10 h-10 bg-terracotta rounded-full border-2 border-white flex items-center justify-center text-white text-sm font-medium">M</div>
-                      <div className="w-10 h-10 bg-gray-600 rounded-full border-2 border-white flex items-center justify-center text-white text-xs">+2K</div>
-                    </div>
-                    <span className="text-sm text-gray-700">2,847 people escaped bloated software</span>
-                  </div>
+
                 </div>
               </motion.div>
               
@@ -582,7 +575,7 @@ export default function Home() {
               Ready to Escape the Bloat?
             </h2>
             <p className="text-xl text-gray-300 mb-12">
-              Join 2,847 people who've already said goodbye to bloated software
+              Say goodbye to bloated software
             </p>
             
             <div className="max-w-md mx-auto">

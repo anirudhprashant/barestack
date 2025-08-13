@@ -50,7 +50,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-parchment/20 mt-8 pt-8 text-center text-parchment/60">
-          <p>&copy; 2024 BareStack. All rights reserved. Open source, forever free.</p>
+          <p>&copy; 2025 BareStack. All rights reserved. Open source, forever free.</p>
         </div>
       </div>
     </footer>

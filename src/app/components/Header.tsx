@@ -41,14 +41,15 @@ export default function Header() {
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-1">
-            <NavLink href="#home">home</NavLink>
-            <NavLink href="#features">features</NavLink>
-            <NavLink href="#about">about</NavLink>
-            <NavLink href="#contact">contact</NavLink>
+            <NavLink href="#hero">home</NavLink>
+            <NavLink href="#problem">problem</NavLink>
+            <NavLink href="#calculator">calculator</NavLink>
+            <NavLink href="#products">products</NavLink>
             <motion.button
               className="ml-4 px-6 py-2 bg-gradient-to-r from-terracotta to-loam text-white rounded-full font-medium text-sm hover:shadow-lg transition-all duration-200"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}
             >
               join waitlist
             </motion.button>
