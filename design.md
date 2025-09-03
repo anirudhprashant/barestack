@@ -1,22 +1,17 @@
 # BareStack Design System
 
-## Design Methodology
-The design is calm, stable, and authentic, presented in a modern, dynamic layout. The goal is a focused, uncluttered experience that feels premium and engaging.
+## Aesthetic Inspiration
+- **Odoo:** `https://www.odoo.com/` - Reason: Love the clean, grid-based app layout. It feels organized and approachable.
+- **Twenty:** `https://website-on-framer.twenty.com/` - Reason: Excellent typography, generous use of white space, modern and professional aesthetic.
 
-## Color Palette: "Grounded & Calm"
-- **Background:** Parchment (`#F7F5F2`)
-- **Text:** Rich Loam (`#413C3A`)
-- **Primary Accent (Buttons/Links):** Terracotta (`#E07A5F`)
-- **Secondary Accent (Borders/Highlights):** Sage Green (`#84A98C`)
+## Core UI/UX Principles
+1. **Obvious by Default:** A user should never have to hunt for a feature.
+2. **Fewer Clicks:** Accomplish core tasks in the minimum number of steps.
+3. **Calm & Focused:** The UI must be free of clutter and distractions.
 
-## Typography: "Clean & Readable"
-- **Headings:** Inter
-- **Body Text:** Source Sans Pro
+## Brand Voice Keywords
+- **Old:** Lean, Clean, Dream
+- **New:** Direct, Honest, Irreverent, Effective, No-Bullshit
 
-## Layout & Whitespace
-- Use a component-based, alternating grid layout inspired by modern SaaS sites.
-- Maintain generous whitespace around all elements and sections. The layout must breathe.
-
-## Animations & Interactivity
-- **Scroll Animations:** Implement subtle "fade-in and slide-up" reveal animations on elements as the user scrolls into view. Animations should be smooth and gentle, not jarring.
-- **Hover Effects:** Interactive elements like buttons and cards should have smooth, subtle transitions on hover (e.g., a slight lift or color change).
+## Color Palette & Typography
+*(To be defined after initial mockups)*

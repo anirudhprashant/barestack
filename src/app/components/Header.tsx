@@ -1,84 +1,125 @@
-'use client'
+"use client";
+import React, { useState } from 'react';
 
-import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY
-      setIsScrolled(scrollTop > 20)
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  const handleLinkClick = () => {
+    setIsMenuOpen(false);
+  };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-      isScrolled ? 'bg-white/95 backdrop-blur-lg border-b border-gray-200/50 shadow-lg shadow-black/5' : ''
-    }`}>
+    <header className="bg-brand-background border-b border-gray-100 relative z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <motion.div 
-            className="flex items-center cursor-pointer group"
-            whileHover={{ scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
-          >
-            <div className="absolute inset-0 bg-terracotta/10 rounded-lg blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
-            <div>
-              <span className="font-bold tracking-tight text-loam text-2xl" style={{ fontFamily: 'Varela Round, Inter, sans-serif' }}>
-                barestack.
-              </span>
-              <div className="text-xs font-medium text-loam/70">
-                Barebones. Bare Necessities.
-              </div>
-            </div>
-          </motion.div>
+          <div className="flex-shrink-0">
+            <h1 className="text-2xl font-semibold text-brand-text">
+              BareStack.
+            </h1>
+          </div>
 
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-1">
-            <NavLink href="#hero">home</NavLink>
-            <NavLink href="#problem">problem</NavLink>
-            <NavLink href="#calculator">calculator</NavLink>
-            <NavLink href="#products">products</NavLink>
-            <motion.button
-              className="ml-4 px-6 py-2 bg-gradient-to-r from-terracotta to-loam text-white rounded-full font-medium text-sm hover:shadow-lg transition-all duration-200"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            <nav className="flex space-x-8">
+              <a
+                href="#suite"
+                className="text-gray-600 hover:text-brand-text transition-colors duration-200"
+              >
+                Tools
+              </a>
+              <a
+                href="#manifesto"
+                className="text-gray-600 hover:text-brand-text transition-colors duration-200"
+              >
+                Manifesto
+              </a>
+              
+            </nav>
+            
+            {/* CTA Button */}
+            <a 
+              href="https://www.linkedin.com/in/anirudhprashant/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200"
             >
-              join waitlist
-            </motion.button>
-          </nav>
+              And so will this
+            </a>
+          </div>
 
           {/* Mobile menu button */}
-          <motion.button 
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            whileTap={{ scale: 0.95 }}
-          >
-            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </motion.button>
+          <div className="md:hidden">
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-gray-600 hover:text-brand-text focus:outline-none focus:text-brand-text"
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? (
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
       </div>
-    </header>
-  )
-}
 
-function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <motion.a
-      href={href}
-      className="px-4 py-2 text-gray-600 hover:text-gray-900 font-medium text-sm rounded-lg hover:bg-gray-50 transition-all duration-200 capitalize"
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-    >
-      {children}
-    </motion.a>
-  )
-}
+      {/* Mobile Navigation Overlay */}
+      {isMenuOpen && (
+        <div className="fixed inset-0 z-40 md:hidden">
+          <div className="fixed inset-0 bg-black bg-opacity-25" onClick={() => setIsMenuOpen(false)} />
+          <div className="relative bg-brand-background w-full h-full pt-16">            {/* Close Button */}
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className="absolute top-4 right-4 text-gray-600 hover:text-brand-text focus:outline-none focus:text-brand-text"
+              aria-label="Close menu"
+            >
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <div className="px-4 py-6 space-y-6">
+              <a
+                href="#suite"
+                onClick={handleLinkClick}
+                className="block text-2xl font-medium text-gray-600 hover:text-brand-text transition-colors duration-200"
+              >
+                Tools
+              </a>
+              <a
+                href="#manifesto"
+                onClick={handleLinkClick}
+                className="block text-2xl font-medium text-gray-600 hover:text-brand-text transition-colors duration-200"
+              >
+                Manifesto
+              </a>
+              <a
+                href="#contact"
+                onClick={handleLinkClick}
+                className="block text-2xl font-medium text-gray-600 hover:text-brand-text transition-colors duration-200"
+              >
+                Contact
+              </a>
+              <a 
+                 href="https://www.linkedin.com/in/anirudhprashant/" 
+                 target="_blank" 
+                 rel="noopener noreferrer"
+                 className="block w-full mt-8 bg-brand-primary text-white px-6 py-3 rounded-md hover:bg-gray-700 transition-colors duration-200 text-lg font-medium text-center"
+               >
+                 And so will this
+               </a>
+            </div>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+};
+
+export default Header;

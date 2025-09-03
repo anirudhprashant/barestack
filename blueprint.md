@@ -1,22 +1,28 @@
-# Website Blueprint: The One-Page Experience
+# BareStack Project Blueprint
 
-The website is a single, scrolling page composed of several distinct sections.
+## Project Mission
+To create a CRM that is simple, easy, and non-complicated. A barebones, highly effective tool that eliminates the bloat and overwhelming complexity of mainstream CRMs. No bullshit, just results.
 
-### Section 1: The Hero & Manifesto
-- **Layout:** A powerful, typography-focused hero section.
-- **Content Theme:** Write a concise, hard-hitting manifesto based on the ethos in `framework.md`. It should challenge the status quo of bloated software and introduce BareStack's philosophy of subtraction and simplicity. End with a strong, memorable tagline like "BareStack. Barebones. Bare Necessities."
+## Core Problem
+Existing CRMs are powerful but notoriously complex, expensive, and bloated. They force small teams to focus on learning the software instead of selling.
 
-### Section 2: The First Product
-- **Layout:** A two-column layout. One column for text, the other for a visual.
-- **Content Theme:** Introduce the first product, "BareCRM." Describe its core benefit as a ridiculously simple and focused tool, contrasting it with complex enterprise CRMs.
-- **Visuals:** In the visual column, place a clean, minimalist placeholder for an image or animation of the BareCRM software.
+## Target Audience
+- **Primary:** Small business owners, agencies, and small teams (2-10 people) who need to focus on core sales activities, not software administration.
 
-### Section 3: Core Principles / Features
-- **Layout:** A three or four-column card-based layout.
-- **Content Theme:** Create a series of cards, each representing one of the "Guiding Principles" from `framework.md` (e.g., "Subtract, Don't Add"). Write a short, benefit-oriented description for each principle.
-- **Visuals:** Each card could have a very simple, abstract icon that visually represents the principle.
+## Guiding Principles
+1. **Radical Simplicity:** If a feature adds complexity, it is rejected by default.
+2. **Effectiveness over Features:** Success is measured by user outcomes (deals closed), not the feature count.
+3. **Aesthetic Minimalism:** The design must be clean, calm, and beautiful. It should feel like a breath of fresh air.
+4. **Speed is a Feature:** The application must be incredibly fast and responsive.
 
-### Section 4: The Waitlist
-- **Layout:** A simple, centered, and prominent call-to-action section.
-- **Content Theme:** Write a compelling invitation for users to join the community. Emphasize that they will be the first to know about new, simple, and free tools.
-- **Action:** A simple email input form.
+## Core 'Barebones' Feature Set
+- **Contact Management:** Add, edit, and view contacts.
+- **Interaction Logging:** Add notes and log meetings for each contact.
+- **Deal Funnel:** Track contacts through customizable stages (e.g., Lead, Meeting Scheduled, Closed).
+- **Tagging:** Simple, flexible tagging for organization.
+
+## Anti-Goals (What We Will Never Be)
+- We are not an all-in-one marketing automation platform.
+- We will not have complex, multi-layered reporting dashboards.
+- We will not require a dedicated administrator to manage.
+- We will not be "expensive as fuck." The core product will be free for as long as possible.

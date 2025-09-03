@@ -1,13 +1,17 @@
-# BareStack Framework: The "Why"
+# BareStack Technical Framework
 
-## The Ethos: Quietly Powerful Software
-- **Radical Simplicity:** We build tools that are ruthlessly simple, focusing only on essential features.
-- **Honest and Transparent:** No corporate jargon, no marketing fluff, no hidden costs.
-- **Focus on the Craft, Not the Tool:** Our products are designed to fade into the background.
-- **Accessible by Default:** We are committed to making our products free or open-source.
+## Core Technology Stack
+- **Frontend:** Next.js (App Router)
+- **Database:** PostgreSQL (Self-hosted via Coolify)
+- **Styling:** Tailwind CSS
+- **Deployment:** Self-hosted on Hetzner via Coolify
 
-## Guiding Principles
-1. **Subtract, Don't Add:** Always ask "What can we remove?" first.
-2. **Clarity Over Cleverness:** Use simple language and intuitive design.
-3. **Speed is a Feature:** A minimalist product must be blazingly fast.
-4. **Opinionated by Design:** Present the best way to do a task, not all possible ways.
+## Architectural Approach
+Subtractive. We will start with a feature-rich, open-source CRM and aggressively remove features, code, and UI elements that do not align with our "barebones but highly effective" philosophy.
+
+## Confirmed Decisions
+- **Authentication:** Google Sign-In and standard Email/Password login are both required.
+- **Database Hosting:** The Postgres database will be self-hosted on the main Hetzner server, managed by Coolify.
+
+## Key Decisions to be Made
+- **Open-Source Base:** Evaluate and select the best open-source CRM to use as a foundation. (Research task in progress).
